@@ -12,7 +12,7 @@ Sample weights from the provided screenshot: Homework 10%, Quiz 20%, Midterm 25%
 
 ## 2. Scope
 
-Required workflow: create/edit categories and weights; add/edit/delete entries; distinguish blank scores and zero; support equal-weight and total-points averages; mark completed categories; enter a target and predictions; solve one unknown exam; explain reachability and minimum/maximum projected totals; save/load actual data; include demo data.
+Required workflow: create/edit categories and weights; add/edit/delete entries; distinguish blank scores and zero; support equal-weight and total-points averages; mark completed categories; enter a target and predictions; solve one unknown exam; explain reachability and minimum/maximum projected totals; save/load actual data.
 
 Possible later additions: report export, CSV imports, multiple courses, trend charts. Complete and test the main workflow before adding them.
 
@@ -50,7 +50,7 @@ Inputs must be editable without changing source. Edits invalidate stale results;
 
 ### C: Storage, Validation, and Integration
 
-Own the versioned file format, save/load, model validation, demo data, boundary testing, startup instructions, and clean-directory packaging checks. Deliver storage and validation contracts, reproducible examples, test records, and an actual issue log. Present testing and persistence.
+Own the versioned file format, save/load, model validation, boundary testing, startup instructions, and clean-directory packaging checks. Deliver storage and validation contracts, reproducible examples, test records, and an actual issue log. Present testing and persistence.
 
 Load a temporary model and validate it before replacing the current course. Failed loads must preserve current data. C should implement code rather than only writing slides.
 
@@ -139,13 +139,13 @@ Report:4–5 pages. B drafts goals/workflow/screenshots; A drafts UML, models, f
 
 Suggested five-minute presentation: B explains the need and demonstrates entries (1m40s); A explains aggregation and target solving (1m40s); C shows persistence/validation, testing and key areas without AI (1m20s); reserve20s for switching. B can operate the mouse throughout.
 
-Demo sequence: load sample; compare two aggregation methods; show blank vs zero; enter90/85/90 predictions; solve target85; change target95; save and reload.
+Presentation sequence: enter your own course data; compare two aggregation methods; show blank vs zero; enter90/85/90 predictions; solve target85; change target95; save and reload.
 
 Prepare Q&A on missing scores, aggregation differences, multiple unknown grades, formula verification, data structures, assumptions, and excluded grading policies.
 
 ## 11. Submission Checklist
 
-Include the complete Java source project, README with JDK/startup instructions, example data, and dependency details. Avoid personal absolute paths. Extract the ZIP into another folder/computer and verify compilation and startup.
+Include the complete Java source project, README with JDK/startup instructions, and dependency details. Avoid personal absolute paths. Extract the ZIP into another folder/computer and verify compilation and startup.
 
 Use members' first names for X_Y_Z.zip and the matching PDF name. The PDF must cover design, data structures, testing with actual problems, AI use, and collaboration/contribution percentages if they differ. Slides must include key areas where the group did not use AI. One member submits all deliverables and the team verifies the uploaded versions.
 

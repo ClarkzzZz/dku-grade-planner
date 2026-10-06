@@ -4,6 +4,10 @@ import java.util.HashSet;
 import java.util.List;
 
 public record Course(String name, List<GradeCategory> categories) {
+    public static Course empty() {
+        return new Course("Untitled Course", List.of());
+    }
+
     public Course {
         if (name == null || name.isBlank()) throw new IllegalArgumentException("Course name cannot be blank.");
         name = name.strip();

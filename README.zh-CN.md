@@ -2,7 +2,7 @@
 
 [English README](README.md) | **中文版**
 
-Java 21 + Swing 的课程成绩与目标分数计算器，COMPSCI 201 三人小组项目第二版（v0.2）。无需 Maven、Gradle、数据库或第三方库。
+Java 21 + Swing 的课程成绩与目标分数计算器，COMPSCI 201 三人小组项目第三版（v0.3）。无需 Maven、Gradle、数据库或第三方库。
 
 ## 启动
 
@@ -39,19 +39,20 @@ IDE中把SDK设置为21，将`src/main/java`标为源码目录，运行`edu.dku.
 - 输入目标总分和其他类别的预计最终成绩，反推一项未知考试。
 - 显示目标是否可达、考试0/100分时预计总分和计算假设。
 - 权重、得分、类别结束状态校验，本地XML保存加载。
-- 未保存成绩提示、加载失败保留数据、可重复演示样例。
+- 未保存成绩提示、加载失败保留数据。
 
-## 快速体验
+## 开始使用
 
-启动显示演示数据，不是真实学生成绩。模板权重：Homework10%、Quiz20%、Midterm25%、Final project15%、Final exam30%。
+顶部固定显示 **DKU Grade Planner**，下方单独显示课程名称。启动时课程为 **Untitled Course**，没有预置类别或成绩，目标分数也为空。
 
-1. 选Homework：HW1为8/10、HW2为90/100、HW3未评分，等权平均85。
-2. 点击“Edit Category”，切换“Total Points”，平均约89.09；也可切回等权。
-3. 底部选Final exam；双击预测表最后一列，填写Homework90、Quiz85、Final project90。Midterm已结束，使用真实80。
-4. 目标85，期末至少85.00；目标95，无法达到，最高预计89.50。
-5. 保存XML后打开，真实成绩、权重与顺序恢复；预测值和目标是临时情景，不保存。
+1. 点击 **Course Name** 设置课程名称。
+2. 点击 **Add Category**，按 syllabus 添加考核类别、权重和汇总方式。反推时权重必须合计100%。
+3. 选择类别，点击 **Add Entry** 逐次添加 homework、quiz 或考试成绩，填写得分与满分；未评分留空。
+4. 类别内全部评分完成后，在 **Edit Category** 中标记结束，实际类别平均才计入确定贡献。
+5. 选择一项未结束、正权重、且仅含一条未评分成绩的考试，填写目标分数和其他未结束类别的预计最终平均，点击 **Calculate**。
+6. 用 **Save** 保存本地课程，或用 **Open** 打开已有文件。预测值和目标是临时情景，不写入成绩文件。
 
-新建课程后先添加类别，再添加成绩。反推考试类别须有**一条未评分成绩、正权重、且未结束**。类别全部评分完成后，在“Edit Category”中勾选结束状态，才计入确定贡献。已结束类别要添加未评分条目，先取消结束状态。
+已结束类别要添加未评分条目，需先在 **Edit Category** 中重新开放。**New** 新建空白课程，并在已有未保存修改时提示保存。应用不附带演示课程文件或预置成绩。
 
 ## 计算规则
 
@@ -92,7 +93,7 @@ java -Djava.awt.headless=true -cp "build/classes;build/test-classes" edu.dku.gra
 |---|---|---|
 | 模型与算法 | Course、GradeCategory、GradeEntry、GradeCalculator | A |
 | Swing界面 | MainFrame、App | B |
-| 存储、演示数据和测试 | CourseStorage、DemoData、GradePlannerTest | C |
+| 存储和测试 | CourseStorage、GradePlannerTest | C |
 
 List保存类别与成绩；Map按类别ID查预测；Set校验重复ID和名称。详见[三人计划](docs/team-plan.md)。
 
@@ -102,6 +103,8 @@ List保存类别与成绩；Map按类别ID查预测；Set校验重复ID和名称
 
 第一版由Codex辅助实现。团队应理解代码、亲自测试，并根据课程完整AI规则记录使用情况。团队计划中的角色是接手建议，不代表这些代码已由三位成员分别编写。
 
-## 第二版更新
+## 第三版更新
 
-应用按钮、表格、状态、结果、错误提示与演示课程名称统一为英文；Swing确认按钮和文件选择器也使用英文。README提供中英两版，计划与验证文档为英文。XML字段和算法保持兼容，已有用户录入的课程名称不会被自动翻译。
+启动改为空白课程，应用名称与可编辑课程名称分开显示。移除 Load Demo 按钮、应用源码中的演示数据类和附带示例XML。计算测试数据只保留在测试源码中，不进入应用JAR。
+
+界面保持英文，README提供中英两版。XML字段和计算规则保持兼容，已有用户录入的名称不会被自动翻译。

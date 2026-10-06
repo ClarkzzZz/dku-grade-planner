@@ -18,12 +18,13 @@ import java.util.UUID;
 
 /** Swing controller. Model and calculator contain no UI dependencies. */
 public final class MainFrame extends JFrame {
-    private Course course = DemoData.create();
+    private Course course = Course.empty();
     private Path currentFile;
     private boolean dirty;
     private boolean refreshing;
     private List<GradeCategory> predictionRows = List.of();
-    private final JLabel courseTitle = new JLabel();
+    private final JLabel courseTitle = new JLabel("DKU Grade Planner");
+    private final JLabel courseName = new JLabel();
     private final JLabel summary = new JLabel();
     private final JLabel categoryDetail = new JLabel();
     private final CategoryTableModel categoryModel = new CategoryTableModel();
@@ -33,12 +34,12 @@ public final class MainFrame extends JFrame {
     private final JTable entryTable = table(entryModel);
     private final JTable expectedTable = table(expectedModel);
     private final JComboBox<CategoryChoice> targetExam = new JComboBox<>();
-    private final JTextField targetScore = new JTextField("85", 6);
+    private final JTextField targetScore = new JTextField(6);
     private final JTextArea result = new JTextArea();
     private final Map<String, String> expectedInputs = new HashMap<>();
 
     public MainFrame() {
-        super("DKU Grade Planner v0.2 · Java 21");
+        super("DKU Grade Planner");
         setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         addWindowListener(new WindowAdapter() {
             @Override public void windowClosing(WindowEvent e) {
@@ -50,9 +51,12 @@ public final class MainFrame extends JFrame {
         setContentPane(root);
         courseTitle.setFont(courseTitle.getFont().deriveFont(Font.BOLD, 21f));
         var header = new JPanel(new BorderLayout(6, 6));
-        header.add(courseTitle, BorderLayout.NORTH);
+        var heading = new JPanel(new GridLayout(2, 1, 0, 5));
+        heading.add(courseTitle);
+        heading.add(courseName);
+        header.add(heading, BorderLayout.NORTH);
         header.add(buttons(button("New", this::newCourse), button("Course Name", this::renameCourse),
-                button("Load Demo", this::loadDemo), button("Open", this::open),
+                button("Open", this::open),
                 button("Save", () -> save(false)), button("Save As", () -> save(true))), BorderLayout.CENTER);
         header.add(summary, BorderLayout.SOUTH);
         root.add(header, BorderLayout.NORTH);
@@ -113,7 +117,7 @@ public final class MainFrame extends JFrame {
         setMinimumSize(new Dimension(1050, 760));
         setSize(1240, 880);
         setLocationRelativeTo(null);
-        refresh(null, "final");
+        refresh(null, null);
     }
 
     private static JTable table(AbstractTableModel model) {
@@ -150,8 +154,8 @@ public final class MainFrame extends JFrame {
         stopPredictionEditing();
         refreshing = true;
         try {
-            courseTitle.setText(course.name());
-            setTitle("DKU Grade Planner v0.2" + (dirty ? " *" : "") +
+            courseName.setText("Course: " + course.name());
+            setTitle("DKU Grade Planner" + (dirty ? " *" : "") +
                     (currentFile == null ? " · Unsaved" : " · " + currentFile.getFileName()));
             categoryModel.fireTableDataChanged();
             if (!course.categories().isEmpty()) {
@@ -168,6 +172,8 @@ public final class MainFrame extends JFrame {
             summary.setText("Total Weight: " + display(weight) + "%" + (valid ? "" : " (must total 100%)")
                     + "   |   " + contributionLabel + " " + display(GradeCalculator.finalizedContribution(course))
                     + "   |   Finalized Average: " + GradeCalculator.finalizedAverage(course).map(MainFrame::display).orElse("N/A"));
+            if (course.categories().isEmpty())
+                summary.setText("No grading categories yet. Add your syllabus categories and weights to get started.");
             targetExam.removeAllItems();
             for (var c : course.categories()) if (GradeCalculator.canSolve(c)) targetExam.addItem(new CategoryChoice(c.id(), c.name()));
             for (int i = 0; i < targetExam.getItemCount(); i++)
@@ -285,20 +291,12 @@ public final class MainFrame extends JFrame {
 
     private void newCourse() {
         if (!confirmDiscard()) return;
-        course = new Course("My Course", List.of());
+        course = Course.empty();
         currentFile = null;
         dirty = false;
         expectedInputs.clear();
+        targetScore.setText("");
         refresh(null, null);
-    }
-
-    private void loadDemo() {
-        if (!confirmDiscard()) return;
-        course = DemoData.create();
-        currentFile = null;
-        dirty = false;
-        expectedInputs.clear();
-        refresh(null, "final");
     }
 
     private JFileChooser chooser() {
@@ -319,7 +317,8 @@ public final class MainFrame extends JFrame {
             currentFile = path;
             dirty = false;
             expectedInputs.clear();
-            refresh(null, "final");
+            targetScore.setText("");
+            refresh(null, null);
         } catch (Exception ex) { error("Load failed. Your current data has been kept.\n" + ex.getMessage()); }
     }
 
@@ -339,7 +338,7 @@ public final class MainFrame extends JFrame {
             CourseStorage.save(course, path);
             currentFile = path;
             dirty = false;
-            setTitle("DKU Grade Planner v0.2 · " + path.getFileName());
+            setTitle("DKU Grade Planner · " + path.getFileName());
             return true;
         } catch (Exception ex) { error("Save failed: " + ex.getMessage()); return false; }
     }
@@ -397,6 +396,10 @@ public final class MainFrame extends JFrame {
     }
 
     private void clearResult() {
+        if (course.categories().isEmpty()) {
+            result.setText("Get started\n\n1. Set your course name.\n2. Add grading categories and weights from your syllabus.\n3. Add homework, quiz, and exam entries.\n4. Enter your target grade and expected averages.\n\nOr use Open to load a previously saved course.");
+            return;
+        }
         result.setText("Enter expected grades, then click Calculate.\n\nCurrent averages for unfinished categories reflect graded entries only, not their final contribution.\n\nSolve one unknown exam at a time. Other unfinished categories require explicit assumptions.");
     }
 

@@ -2,7 +2,7 @@
 
 **English** | [Chinese README](README.zh-CN.md)
 
-Version 0.2: an English-language course grade and target exam score calculator built with **Java 21 + Swing** for a three-person COMPSCI 201 project. No Maven, Gradle, database, or third-party library is required.
+Version 0.3: an English-language course grade and target exam score calculator built with **Java 21 + Swing** for a three-person COMPSCI 201 project. No Maven, Gradle, database, or third-party library is required.
 
 ## Run
 
@@ -40,19 +40,21 @@ In an IDE, select JDK 21, mark `src/main/java` as a source directory, and run `e
 - Enter a target overall grade and expected final averages for unfinished categories to solve one unknown exam.
 - Show unreachable targets, cases where zero suffices, projected grades with 0/100 on the exam, and the assumptions used.
 - Validate weights, scores, and completion status; save and load actual grades in local XML files.
+- Start with a blank course and guide users to add their own syllabus information.
 - Prompt for unsaved grade changes; keep current data when loading fails.
 
-## Quick Demo
+## Getting Started
 
-The initial data is fictional. Category weights are Homework 10%, Quiz 20%, Midterm 25%, Final project 15%, and Final exam 30%.
+The header displays **DKU Grade Planner**. The course name appears separately underneath. On startup, **Untitled Course** has no categories or scores, and the target field is blank.
 
-1. Select Homework. HW1 is 8/10, HW2 is 90/100, and HW3 is ungraded. The equal-weight average is 85.
-2. Click **Edit Category**, choose **Total Points**, and the average becomes approximately 89.09. Switch back if desired.
-3. Select **Final exam** under **Exam to Solve**. Double-click the last column of the prediction table and enter Homework 90, Quiz 85, and Final project 90. Midterm is finalized and uses the actual score of 80.
-4. With a target of 85, the required final exam score is 85.00. Change the target to 95: it is unreachable, and the highest projected overall grade is 89.50.
-5. Click **Save** to create XML. Reopening restores actual entries, weights, and order. Predictions and the target are temporary and are not saved.
+1. Click **Course Name** to name your course.
+2. Click **Add Category** for each syllabus grading category. Enter its name, percentage weight, and aggregation method; weights must total 100% before target calculations.
+3. Select a category and click **Add Entry** to record each homework, quiz, or exam. Enter earned and maximum points; leave the score blank if ungraded.
+4. When every entry in a category is graded, use **Edit Category** to finalize it. Its actual average then contributes to the finalized total.
+5. For target calculations, select an unfinished exam category containing exactly one ungraded entry and positive weight. Enter your target grade and expected final averages for other unfinished categories. Click **Calculate**.
+6. Click **Save** to store your course locally, or **Open** to load an existing course. Predictions and the target are temporary and are not saved.
 
-For a new course, add categories and then grade entries. The exam to solve must have **positive weight, exactly one ungraded entry, and an unfinished status**. Once all entries are graded, finalize the category through **Edit Category** to include its contribution. Reopen a finalized category before adding an ungraded entry.
+To add ungraded work to a finalized category, first reopen it using **Edit Category**. **New** creates another blank course and prompts you to save any unsaved grade changes. The app ships with no demonstration course files or seeded grades.
 
 ## Calculation Rules
 
@@ -93,15 +95,15 @@ Tests cover calculations, edge cases, locale defaults, and XML storage. See the 
 |---|---|---|
 | Models and calculations | Course, GradeCategory, GradeEntry, GradeCalculator | A |
 | Swing interface | MainFrame, App | B |
-| Storage, demo data, tests | CourseStorage, DemoData, GradePlannerTest | C |
+| Storage and tests | CourseStorage, GradePlannerTest | C |
 
 Lists preserve categories and entries, a map looks up predictions by stable category IDs, and sets validate duplicate names and IDs. See the [three-person plan](docs/team-plan.md).
 
-## Version 0.2
+## Version 0.3
 
-All built-in application text, validation messages, demo names, and source comments are in English. Swing's built-in confirmation controls and file chooser labels use English as well. This README and its Chinese counterpart document the same application.
+The app now starts with a blank course. The application heading is fixed, while the user-editable course name is shown separately. The Load Demo action, production demo-data class, and bundled example XML have been removed. Calculation fixtures live only in test sources and are excluded from the application JAR.
 
-XML field names, grading rules, and saved-data compatibility are preserved. Existing user-entered names remain as entered; the app does not translate personal data.
+Built-in text and controls remain in English, with English and Chinese READMEs. XML field names and grading rules remain compatible with existing saved courses. User-entered names are preserved.
 
 ## Scope
 

@@ -1,6 +1,7 @@
 $ErrorActionPreference = 'Stop'
 Set-Location (Join-Path $PSScriptRoot '..')
 New-Item -ItemType Directory -Force 'build/classes' | Out-Null
+Get-ChildItem -Recurse 'build/classes' -Filter '*.class' | Remove-Item -Force
 $sources = @(Get-ChildItem -Recurse 'src/main/java' -Filter '*.java' | ForEach-Object { $_.FullName })
 & javac --release 21 -encoding UTF-8 -d build/classes $sources
 if ($LASTEXITCODE -ne 0) { throw 'Compilation failed' }

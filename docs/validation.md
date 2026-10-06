@@ -1,31 +1,32 @@
-# 第一版验证记录
+# Version 0.2 Validation Record
 
-日期：2026-10-06。
+Date: October 6, 2026.
 
-## 已执行
+## Executed Checks
 
-- Oracle JDK21.0.12.1编译和运行，使用--release21，38项计算和存储检查通过。
-- 此前在JDK25.0.3交叉编译并执行同一组测试也通过。
-- class主版本65，对应Java21。
-- XML演示文件由本版生成，含中文、不同满分成绩和未评分值。
-- 启动Swing窗口，检查三个主要面板布局与样例成绩。
-- 点击计算，缺失预测时弹出具体类别提示，关闭后返回原窗口。
+- Version0.1 was compiled and tested on Oracle JDK21.0.12.1 using --release21:38 calculation/storage checks passed. A JDK25.0.3 cross-build also passed.
+- Version0.2 compiled and ran on Oracle JDK21.0.12.1: all42 checks passed, both under normal defaults and with user.language=zh / user.country=CN. Four new checks cover application/Swing defaults and built-in Yes/Open labels.
+- Launched the version0.2 preview with a Java21 runtime. Inspected English main panels at the default window size and confirmed an English validation prompt with OK and an English file chooser with Open/Cancel.
+- Source scanning verifies that all built-in text in source, examples, scripts, and English documentation is free of Chinese characters. Non-Latin storage fixtures remain encoded with Java Unicode escapes.
+- XML field names and file version remain unchanged so existing saved course data is compatible. User-entered names are preserved rather than translated.
 
-自动化测试包括汇总方式、空与零、已结束类别贡献、预测与实际分离、目标85/95、最低最高边界、向上取整、非法数据与状态、重复ID、中文XML往返和覆盖、损坏文件及保存失败。
+Version0.1 GUI checks: launched the Swing window, inspected the main panels and sample values, clicked Calculate with missing predictions, and observed a category-specific error prompt.
 
-## 尚需手动复核
+The automated macOS input tool could not reliably enter text into Swing fields during those checks. Full manual input and file chooser workflows remain acceptance tasks; Windows/Linux scripts have not been executed on those systems.
 
-本次macOS自动化工具不能可靠向Swing文本框注入键盘输入，完整输入流程和原生文件选择器需团队手动验收。Windows/Linux脚本尚未在对应系统执行。
+## Manual Acceptance Checklist
 
-1. 添加、编辑、删除多次Homework和Quiz，确认取消编辑不修改数据。
-2. 8/10和90/100：等权85，总点数约89.09；0参与，空排除。
-3. 类别有空成绩时不能结束；结束后先重新开放才能添加未评分项。
-4. 预测表90/85/90，目标85，Final exam要求85；目标95不可达，最高89.5。
-5. 正在编辑预测时切换反推考试，类别和值的对应不能错乱。
-6. 修改真实成绩或目标后，旧结果必须失效。
-7. 保存XML、关闭、重开并加载，中文、顺序、空和0保持一致，预测不保存。
-8. 编辑后关闭/新建/加载示例，取消须保留修改，保存须落盘。
-9. 打开损坏文件，提示失败且保留当前数据。
-10. 从另一目录按README编译运行。
+1. Add/edit/delete homework and quiz entries; cancelling an edit must preserve data.
+2. For8/10 and90/100, verify Equal Weight85 and Total Points approximately89.09. Zero counts; blank does not.
+3. An unfinished entry prevents finalization. Reopen a finalized category before adding ungraded work.
+4. Enter expected averages90/85/90 and target85: Final exam requires85. Target95 is unreachable, with maximum89.5.
+5. Switch the exam while editing a prediction; values must stay mapped to category IDs.
+6. Edits to grades, weights, targets, or predictions invalidate the old result.
+7. Save, restart, and reload: order, non-Latin names, blank, and zero round-trip; predictions are not persisted.
+8. When closing/new/loading a demo with changes, Cancel keeps them and Save writes them.
+9. Loading a damaged file reports the error and preserves the current course.
+10. Build and run from a clean directory using the README.
+11. On a Chinese-language system, verify English buttons, tables, results, warnings, confirmation buttons, and file chooser labels.
+12. Check table headings and longer English messages at the minimum window size.
 
-此记录不是最终报告。测试案例不是已发生bug；真实开发问题应另行记录。
+This record is not the final course report. Planned tests are not evidence of actual bugs; keep an honest issue log separately.

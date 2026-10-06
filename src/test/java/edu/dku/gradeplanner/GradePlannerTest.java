@@ -25,21 +25,26 @@ public final class GradePlannerTest {
     }
 
     public static void main(String[] args) throws Exception {
+        App.configureEnglishLocale();
+        check(java.util.Locale.getDefault().equals(java.util.Locale.ENGLISH), "English application locale");
+        check(javax.swing.JComponent.getDefaultLocale().equals(java.util.Locale.ENGLISH), "English Swing locale");
+        check("Yes".equals(javax.swing.UIManager.getString("OptionPane.yesButtonText")), "English confirmation button");
+        check("Open".equals(javax.swing.UIManager.getString("FileChooser.openButtonText")), "English file chooser button");
         var demo = DemoData.create();
         var hw = demo.categories().getFirst();
         close(GradeCalculator.average(hw).orElseThrow(), "85", "Equal weighting excludes blank");
         var points = new GradeCategory(hw.id(), hw.name(), hw.weight(), GradeCategory.Mode.POINTS, false, hw.entries());
         close(GradeCalculator.average(points).orElseThrow(), "89.0909090909", "Total points weighting");
-        var zero = new GradeCategory("z", "零分", n("10"), GradeCategory.Mode.EQUAL, false, List.of(
-                new GradeEntry("z1", "零分", BigDecimal.ZERO, n("10")),
-                new GradeEntry("z2", "未评分", null, n("100"))));
+        var zero = new GradeCategory("z", "Zero", n("10"), GradeCategory.Mode.EQUAL, false, List.of(
+                new GradeEntry("z1", "Zero", BigDecimal.ZERO, n("10")),
+                new GradeEntry("z2", "Ungraded", null, n("100"))));
         close(GradeCalculator.average(zero).orElseThrow(), "0", "Zero counts; blank does not");
-        var empty = new GradeCategory("e", "空", n("0"), GradeCategory.Mode.POINTS, false, List.of());
+        var empty = new GradeCategory("e", "Empty", n("0"), GradeCategory.Mode.POINTS, false, List.of());
         check(GradeCalculator.average(empty).isEmpty(), "Empty category has no average");
         check(GradeCalculator.average(demo.categories().get(4)).isEmpty(), "All ungraded has no average");
         close(GradeCalculator.finalizedContribution(demo), "20", "Only finalized midterm contributes");
         close(GradeCalculator.finalizedAverage(demo).orElseThrow(), "80", "Finalized average denominator");
-        check(GradeCalculator.finalizedAverage(new Course("空课程", List.of(empty))).isEmpty(), "No finalized weight");
+        check(GradeCalculator.finalizedAverage(new Course("Empty Course", List.of(empty))).isEmpty(), "No finalized weight");
         var expected = Map.of("homework", n("90"), "quiz", n("85"), "project", n("90"), "midterm", n("0"));
         var r = GradeCalculator.requiredScore(demo, "final", n("85"), expected);
         close(r.required(), "85", "Target calculation ignores prediction for finalized midterm");
@@ -58,25 +63,25 @@ public final class GradePlannerTest {
         rejects(() -> GradeCalculator.requiredScore(demo, "final", n("101"), expected), IllegalArgumentException.class, "Invalid target");
         rejects(() -> GradeCalculator.requiredScore(demo, "midterm", n("85"), expected), IllegalArgumentException.class, "Finalized exam cannot be unknown");
         rejects(() -> GradeCalculator.requiredScore(demo, "missing", n("85"), expected), IllegalArgumentException.class, "Missing category");
-        rejects(() -> GradeCalculator.requiredScore(new Course("错误权重", List.of(hw)), "homework", n("85"), expected), IllegalArgumentException.class, "Bad weight total");
+        rejects(() -> GradeCalculator.requiredScore(new Course("Invalid Weights", List.of(hw)), "homework", n("85"), expected), IllegalArgumentException.class, "Bad weight total");
         rejects(() -> new GradeEntry("a", "a", n("11"), n("10")), IllegalArgumentException.class, "Over maximum");
         rejects(() -> new GradeEntry("a", "a", n("-1"), n("10")), IllegalArgumentException.class, "Negative score");
         rejects(() -> new GradeEntry("a", "a", null, n("0")), IllegalArgumentException.class, "Zero maximum");
         rejects(() -> new GradeEntry("a", "a", null, n("1e-999999")), IllegalArgumentException.class, "Extreme exponent");
         rejects(() -> new GradeCategory("a", "a", n("10"), GradeCategory.Mode.EQUAL, true, hw.entries()), IllegalArgumentException.class, "Incomplete finalized category");
-        rejects(() -> new Course("重复", List.of(hw, hw)), IllegalArgumentException.class, "Duplicate categories");
+        rejects(() -> new Course("Duplicate", List.of(hw, hw)), IllegalArgumentException.class, "Duplicate categories");
         check(!GradeCalculator.canSolve(hw) && !GradeCalculator.canSolve(empty), "Only a single ungraded exam can be solved");
         var zeroWeight = new GradeCategory("f", "f", n("0"), GradeCategory.Mode.EQUAL, false,
                 List.of(new GradeEntry("f", "f", null, n("100"))));
         check(!GradeCalculator.canSolve(zeroWeight), "Zero-weight exam excluded");
         var completed = new GradeCategory("done", "done", n("100"), GradeCategory.Mode.EQUAL, true,
-                List.of(new GradeEntry("d", "期末", n("85"), n("100"))));
-        close(GradeCalculator.finalizedContribution(new Course("结束", List.of(completed))), "85", "Final total");
+                List.of(new GradeEntry("d", "Final Exam", n("85"), n("100"))));
+        close(GradeCalculator.finalizedContribution(new Course("Finalized", List.of(completed))), "85", "Final total");
 
         var dir = Files.createTempDirectory("grade-planner-test-");
         try {
-            var file = dir.resolve("成绩.xml");
-            var special = new Course("中文 & <测试> \"引号\"", List.of(hw, zero));
+            var file = dir.resolve("\u6210\u7ee9.xml");
+            var special = new Course("\u4e2d\u6587 & <\u6d4b\u8bd5> \"\u5f15\u53f7\"", List.of(hw, zero));
             CourseStorage.save(special, file);
             check(CourseStorage.load(file).equals(special), "XML round trip Chinese, special chars, blank and zero");
             CourseStorage.save(demo, file);

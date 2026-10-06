@@ -63,12 +63,12 @@ public final class GradeCalculator {
 
     public static Result requiredScore(Course course, String categoryId, BigDecimal target,
                                        Map<String, BigDecimal> expected) {
-        checkPercent(target, "目标总分");
+        checkPercent(target, "Target Grade");
         if (totalWeight(course).compareTo(HUNDRED) != 0)
-            throw new IllegalArgumentException("类别权重合计必须为 100%，当前为 " + totalWeight(course).toPlainString() + "%。");
+            throw new IllegalArgumentException("Category weights must total 100%; the current total is " + totalWeight(course).toPlainString() + "%.");
         var exam = course.categories().stream().filter(c -> c.id().equals(categoryId)).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("请选择待反推考试。"));
-        if (!canSolve(exam)) throw new IllegalArgumentException("待反推类别须有且仅有一条未评分成绩、权重大于 0，且尚未结束。");
+                .orElseThrow(() -> new IllegalArgumentException("Select the exam to solve."));
+        if (!canSolve(exam)) throw new IllegalArgumentException("The exam category must be unfinished, have positive weight, and contain exactly one ungraded entry.");
         var assumptions = new java.util.LinkedHashMap<String, BigDecimal>();
         BigDecimal other = BigDecimal.ZERO;
         for (var c : course.categories()) {
@@ -77,7 +77,7 @@ public final class GradeCalculator {
             if (c.finalized()) score = average(c).orElseThrow();
             else {
                 score = expected.get(c.id());
-                checkPercent(score, c.name() + " 的预计最终平均分");
+                checkPercent(score, c.name() + " expected final average");
                 assumptions.put(c.id(), score);
             }
             other = other.add(contribution(score, c.weight()));
@@ -91,9 +91,9 @@ public final class GradeCalculator {
     }
 
     public static void checkPercent(BigDecimal value, String field) {
-        if (value == null) throw new IllegalArgumentException("请填写 " + field + "。");
+        if (value == null) throw new IllegalArgumentException("Please enter " + field + ".");
         GradeEntry.requireReasonable(value);
         if (value.signum() < 0 || value.compareTo(HUNDRED) > 0)
-            throw new IllegalArgumentException(field + " 必须在 0–100 之间。");
+            throw new IllegalArgumentException(field + " must be between 0 and 100.");
     }
 }

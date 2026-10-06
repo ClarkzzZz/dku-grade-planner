@@ -1,101 +1,110 @@
 # DKU Grade Planner
 
-Java 21 + Swing 的课程成绩与目标分数计算器，COMPSCI 201 三人小组项目第一版。无需 Maven、Gradle、数据库或第三方库。
+**English** | [Chinese README](README.zh-CN.md)
 
-## 启动
+Version 0.2: an English-language course grade and target exam score calculator built with **Java 21 + Swing** for a three-person COMPSCI 201 project. No Maven, Gradle, database, or third-party library is required.
 
-配置 **JDK 21**，确认 `java -version` 和 `javac -version` 均可运行。在仓库根目录执行：
+## Run
 
-macOS / Linux：
+Configure **JDK 21** and check both `java -version` and `javac -version`. From the repository root:
+
+macOS / Linux:
 
 ```bash
 bash scripts/run.sh
 ```
 
-Windows PowerShell：
+Windows PowerShell:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/run.ps1
 ```
 
-构建使用 `javac --release 21`。编译后也可直接运行：
+The build uses `javac --release 21`. After compiling, you can also run:
 
 ```bash
 java -jar build/dku-grade-planner.jar
 ```
 
-运行需要Java 21或更新版本及图形桌面。`build/`不提交到Git，克隆后重新构建。
+Running requires Java 21 or newer and a graphical desktop. Generated files in `build/` are ignored by Git; rebuild after cloning.
 
-IDE中把SDK设置为21，将`src/main/java`标为源码目录，运行`edu.dku.gradeplanner.App`。
+In an IDE, select JDK 21, mark `src/main/java` as a source directory, and run `edu.dku.gradeplanner.App`.
 
-## 已实现
+## Features
 
-- 考核类别、权重和多次成绩的添加、编辑、删除。
-- Homework、Quiz逐次录入得分与满分，每类最多1000条。
-- 每条等权平均与总点数汇总；空成绩不计入，零分计入。
-- 类别当前平均分、已结束类别贡献和已结束类别加权平均。
-- 输入目标总分和其他类别的预计最终成绩，反推一项未知考试。
-- 显示目标是否可达、考试0/100分时预计总分和计算假设。
-- 权重、得分、类别结束状态校验，本地XML保存加载。
-- 未保存成绩提示、加载失败保留数据、可重复演示样例。
+- Add, edit, and delete grading categories, weights, and individual entries.
+- Record multiple homework and quiz scores with separate earned and maximum points; up to 1,000 entries per category.
+- Choose Equal Weight or Total Points aggregation.
+- Exclude ungraded entries; include real scores of zero.
+- View current category averages, finalized contributions, and the weighted average of finalized categories.
+- Enter a target overall grade and expected final averages for unfinished categories to solve one unknown exam.
+- Show unreachable targets, cases where zero suffices, projected grades with 0/100 on the exam, and the assumptions used.
+- Validate weights, scores, and completion status; save and load actual grades in local XML files.
+- Prompt for unsaved grade changes; keep current data when loading fails.
 
-## 快速体验
+## Quick Demo
 
-启动显示演示数据，不是真实学生成绩。模板权重：Homework10%、Quiz20%、Midterm25%、Final project15%、Final exam30%。
+The initial data is fictional. Category weights are Homework 10%, Quiz 20%, Midterm 25%, Final project 15%, and Final exam 30%.
 
-1. 选Homework：HW1为8/10、HW2为90/100、HW3未评分，等权平均85。
-2. 点击“编辑类别”，切换“按总点数”，平均约89.09；也可切回等权。
-3. 底部选Final exam；双击预测表最后一列，填写Homework90、Quiz85、Final project90。Midterm已结束，使用真实80。
-4. 目标85，期末至少85.00；目标95，无法达到，最高预计89.50。
-5. 保存XML后打开，真实成绩、权重与顺序恢复；预测值和目标是临时情景，不保存。
+1. Select Homework. HW1 is 8/10, HW2 is 90/100, and HW3 is ungraded. The equal-weight average is 85.
+2. Click **Edit Category**, choose **Total Points**, and the average becomes approximately 89.09. Switch back if desired.
+3. Select **Final exam** under **Exam to Solve**. Double-click the last column of the prediction table and enter Homework 90, Quiz 85, and Final project 90. Midterm is finalized and uses the actual score of 80.
+4. With a target of 85, the required final exam score is 85.00. Change the target to 95: it is unreachable, and the highest projected overall grade is 89.50.
+5. Click **Save** to create XML. Reopening restores actual entries, weights, and order. Predictions and the target are temporary and are not saved.
 
-新建课程后先添加类别，再添加成绩。反推考试类别须有**一条未评分成绩、正权重、且未结束**。类别全部评分完成后，在“编辑类别”中勾选结束状态，才计入确定贡献。已结束类别要添加未评分条目，先取消结束状态。
+For a new course, add categories and then grade entries. The exam to solve must have **positive weight, exactly one ungraded entry, and an unfinished status**. Once all entries are graded, finalize the category through **Edit Category** to include its contribution. Reopen a finalized category before adding an ungraded entry.
 
-## 计算规则
+## Calculation Rules
 
 ```text
-单条百分制成绩 = 得分 / 满分 × 100
-等权类别平均 = 已评分条目百分制成绩之和 / 已评分条目数
-总点数类别平均 = 已评分条目总得分 / 总满分 × 100
-已结束类别贡献 = 类别最终平均 × 权重 / 100
-待反推考试要求 = (目标总分 - 其他类别实际或预计贡献) / (该考试权重 / 100)
+Entry percentage = earned points / maximum points × 100
+Equal-weight average = sum of graded entry percentages / graded entry count
+Total-points average = total earned points / total maximum points × 100
+Finalized contribution = final category average × weight / 100
+Required exam percentage = (target - other actual or expected contributions) / (exam weight / 100)
 ```
 
-未结束类别的当前平均只代表已有成绩，不直接算为整个类别的最终贡献。预测必须明确输入或点击复制当前平均，并在结果列出假设。已结束类别使用真实成绩；零权重类别不影响预测。
+An unfinished category's current average describes its graded entries, not its final contribution. Enter predictions explicitly or use **Copy Current Averages**. Results list the assumptions. Finalized categories always use actual grades; zero-weight categories do not affect predictions.
 
-使用BigDecimal、DECIMAL128计算，普通显示保留两位小数；“至少需要”向上取两位。反推给出百分制门槛，实际考试给分粒度可能不同。
+Calculations use `BigDecimal` with DECIMAL128 precision. Ordinary display values use two decimal places; required minimum scores round upward to two places. The actual exam's scoring increments may differ.
 
-权重合计非100%时可编辑保存草稿，但不能反推。全部类别结束且权重100%时，顶部显示最终总分。
+When weights do not total 100%, you may edit and save a draft but cannot solve a target. When all categories are finalized and weights total 100%, the top summary shows the final overall grade.
 
-## 测试
+## Tests
 
-macOS / Linux：
+macOS / Linux:
 
 ```bash
 bash scripts/test.sh
 ```
 
-Windows构建后：
+Windows, after building:
 
 ```powershell
 javac --release 21 -encoding UTF-8 -cp build/classes -d build/test-classes src/test/java/edu/dku/gradeplanner/GradePlannerTest.java
 java -Djava.awt.headless=true -cp "build/classes;build/test-classes" edu.dku.gradeplanner.GradePlannerTest
 ```
 
-覆盖计算、边界和XML存储。[验证记录](docs/validation.md)说明已执行检查与仍需手动验收的范围。
+Tests cover calculations, edge cases, locale defaults, and XML storage. See the [validation record](docs/validation.md) for executed checks and remaining manual acceptance steps.
 
-## 代码与团队接手
+## Code and Team Handoff
 
-| 模块 | 文件 | 负责人建议 |
+| Module | Files | Suggested owner |
 |---|---|---|
-| 模型与算法 | Course、GradeCategory、GradeEntry、GradeCalculator | A |
-| Swing界面 | MainFrame、App | B |
-| 存储、演示数据和测试 | CourseStorage、DemoData、GradePlannerTest | C |
+| Models and calculations | Course, GradeCategory, GradeEntry, GradeCalculator | A |
+| Swing interface | MainFrame, App | B |
+| Storage, demo data, tests | CourseStorage, DemoData, GradePlannerTest | C |
 
-List保存类别与成绩；Map按类别ID查预测；Set校验重复ID和名称。详见[三人计划](docs/team-plan.md)。
+Lists preserve categories and entries, a map looks up predictions by stable category IDs, and sets validate duplicate names and IDs. See the [three-person plan](docs/team-plan.md).
 
-## 范围
+## Version 0.2
 
-当前支持一门课的普通加权评分，不处理最低分剔除、额外加分、曲线、考试最低通过线、字母等级或自动PDF解析。每次只反推一项考试，其他未知类别要提供假设。
+All built-in application text, validation messages, demo names, and source comments are in English. Swing's built-in confirmation controls and file chooser labels use English as well. This README and its Chinese counterpart document the same application.
 
-第一版由Codex辅助实现。团队应理解代码、亲自测试，并根据课程完整AI规则记录使用情况。团队计划中的角色是接手建议，不代表这些代码已由三位成员分别编写。
+XML field names, grading rules, and saved-data compatibility are preserved. Existing user-entered names remain as entered; the app does not translate personal data.
+
+## Scope
+
+This version handles one course with standard weighted grading. It does not handle dropped scores, extra credit, curves, minimum exam pass rules, letter-grade boundaries, or automatic syllabus parsing. Solve one exam at a time and provide assumptions for other unfinished categories.
+
+Codex assisted with implementation. Team members should understand the code, test it themselves, and disclose AI use according to the full course policy. Suggested ownership in the plan does not mean each student has already authored those modules.

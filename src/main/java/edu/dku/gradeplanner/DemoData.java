@@ -11,7 +11,7 @@ public final class DemoData {
     }
 
     public static Course create() {
-        return new Course("DKU 示例课程（演示数据）", List.of(
+        return new Course("DKU Sample Course (Demo Data)", List.of(
             new GradeCategory("homework", "Homework", n("10"), GradeCategory.Mode.EQUAL, false, List.of(
                 entry("hw1", "HW1", "8", "10"), entry("hw2", "HW2", "90", "100"), entry("hw3", "HW3", null, "100"))),
             new GradeCategory("quiz", "Quiz", n("20"), GradeCategory.Mode.EQUAL, false, List.of(

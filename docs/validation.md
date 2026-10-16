@@ -16,7 +16,7 @@ Environment: macOS 27.0.1 (arm64), Oracle JDK 25.0.3; compilation uses `--releas
 | Inspect JAR contents | Production classes present; no test classes, DemoData, or course XML |
 | `bash -n scripts/build.sh scripts/test.sh scripts/run.sh` | PASS |
 
-Local compilation on JDK 25 with a Java 21 target is not execution on a Java 21 runtime. No Java 21 runtime or PowerShell is installed in this environment. Linux/Windows execution, the new GitHub Actions workflows, and complete GUI acceptance remain pending. Earlier classroom verification claims are not carried forward as evidence for this release.
+Local compilation on JDK 25 with a Java 21 target is not execution on a Java 21 runtime. An official Eclipse Temurin Java 21.0.12.1 runtime was subsequently downloaded from the Adoptium GitHub release and verified against its published SHA-256 checksum. Both default and Chinese-default test runs passed all 44 checks on this runtime. PowerShell is not installed locally. Linux/Windows execution, the new GitHub Actions workflows, and complete GUI acceptance remain pending. Earlier classroom verification claims are not carried forward as evidence for this release.
 
 ## Reproduce automated checks
 
@@ -31,7 +31,7 @@ Windows PowerShell:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts/test.ps1
-java -Djava.awt.headless=true -Duser.language=zh -Duser.country=CN -cp "build/classes;build/test-classes" edu.dku.gradeplanner.GradePlannerTest
+java '-Djava.awt.headless=true' '-Duser.language=zh' '-Duser.country=CN' -cp "build/classes;build/test-classes" edu.dku.gradeplanner.GradePlannerTest
 ```
 
 Both test scripts rebuild production and test classes. Tests exit unsuccessfully when an assertion fails; there are no external test dependencies. CI is configured for Java 21 and 25 on Ubuntu, macOS, and Windows, including Chinese-default locale and JAR content/version checks. Record the workflow URL and commit when those jobs have actually passed.

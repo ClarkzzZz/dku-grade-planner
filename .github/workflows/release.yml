@@ -16,7 +16,7 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - name: Verify version and release notes
         env:
           TAG: ${{ github.ref_name }}
@@ -24,7 +24,7 @@ jobs:
           version="$(tr -d '\r\n' < VERSION)"
           test "$TAG" = "v$version"
           test -f "docs/releases/$TAG.md"
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '21'

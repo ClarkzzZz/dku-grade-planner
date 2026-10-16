@@ -1,0 +1,45 @@
+name: Prepare draft release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    uses: ./.github/workflows/ci.yml
+  draft:
+    needs: checks
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify version and release notes
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          version="$(tr -d '\r\n' < VERSION)"
+          test "$TAG" = "v$version"
+          test -f "docs/releases/$TAG.md"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: bash scripts/build.sh
+      - name: Package release files
+        run: |
+          cp LICENSE build/LICENSE
+          cd build
+          sha256sum dku-grade-planner.jar > SHA256SUMS
+      - name: Create draft with assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$TAG" --verify-tag --draft --title "$TAG" \
+            --notes-file "docs/releases/$TAG.md" \
+            build/dku-grade-planner.jar build/SHA256SUMS build/LICENSE

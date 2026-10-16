@@ -2,9 +2,11 @@
 
 **English** | [Chinese README](README.zh-CN.md)
 
-Version 0.3: an English-language course grade and target exam score calculator built with **Java 21 + Swing** for a three-person COMPSCI 201 project. No Maven, Gradle, database, or third-party library is required.
+An open-source course grade and target exam score calculator built with **Java 21 + Swing**. The first public release, **v1.0.0**, is being prepared. No Maven, Gradle, database, or third-party library is required.
 
 ## Run
+
+Download the runnable JAR from [GitHub Releases](https://github.com/ClarkzzZz/dku-grade-planner/releases) when available, then run `java -jar dku-grade-planner.jar`. Java 21 or newer is required; Java is not bundled. To build from source, follow the steps below.
 
 Configure **JDK 21** and check both `java -version` and `javac -version`. From the repository root:
 
@@ -80,33 +82,26 @@ macOS / Linux:
 bash scripts/test.sh
 ```
 
-Windows, after building:
+Windows PowerShell:
 
 ```powershell
-javac --release 21 -encoding UTF-8 -cp build/classes -d build/test-classes src/test/java/edu/dku/gradeplanner/GradePlannerTest.java
-java -Djava.awt.headless=true -cp "build/classes;build/test-classes" edu.dku.gradeplanner.GradePlannerTest
+powershell -ExecutionPolicy Bypass -File scripts/test.ps1
 ```
 
-Tests cover calculations, edge cases, locale defaults, and XML storage. See the [validation record](docs/validation.md) for executed checks and remaining manual acceptance steps.
+Tests cover calculations, edge cases, locale defaults, and XML storage. See [validation](docs/validation.md) for reproducible checks and the manual acceptance checklist. GitHub Actions is configured to test Java 21 and 25 on Linux, macOS, and Windows; a configured job is not evidence that it has passed.
 
-## Code and Team Handoff
+## Architecture and Contributing
 
-| Module | Files | Suggested owner |
-|---|---|---|
-| Models and calculations | Course, GradeCategory, GradeEntry, GradeCalculator | A |
-| Swing interface | MainFrame, App | B |
-| Storage and tests | CourseStorage, GradePlannerTest | C |
+The immutable models (`Course`, `GradeCategory`, `GradeEntry`), calculator (`GradeCalculator`), XML persistence (`CourseStorage`), and Swing interface (`App`, `MainFrame`) are separate components. See the [architecture guide](docs/architecture.md).
 
-Lists preserve categories and entries, a map looks up predictions by stable category IDs, and sets validate duplicate names and IDs. See the [three-person plan](docs/team-plan.md).
+Contributions from everyone are welcome: report bugs, improve documentation, add tests, or propose focused changes through pull requests. Start with [CONTRIBUTING.md](CONTRIBUTING.md). English and Chinese issue descriptions are welcome. Do not upload personal grade files.
 
-## Version 0.3
+See the [changelog](CHANGELOG.md), [v1.0.0 release notes](docs/releases/v1.0.0.md), and [release checklist](docs/releasing.md). Earlier v0.1–v0.3 iterations were classroom prototypes; v1.0.0 is the first public release baseline.
 
-The app now starts with a blank course. The application heading is fixed, while the user-editable course name is shown separately. The Load Demo action, production demo-data class, and bundled example XML have been removed. Calculation fixtures live only in test sources and are excluded from the application JAR.
+## License
 
-Built-in text and controls remain in English, with English and Chinese READMEs. XML field names and grading rules remain compatible with existing saved courses. User-entered names are preserved.
+[MIT](LICENSE). Originally developed as a course project and now maintained as a community project. Codex assisted with implementation; contributors are responsible for reviewing and validating submitted changes.
 
 ## Scope
 
 This version handles one course with standard weighted grading. It does not handle dropped scores, extra credit, curves, minimum exam pass rules, letter-grade boundaries, or automatic syllabus parsing. Solve one exam at a time and provide assumptions for other unfinished categories.
-
-Codex assisted with implementation. Team members should understand the code, test it themselves, and disclose AI use according to the full course policy. Suggested ownership in the plan does not mean each student has already authored those modules.

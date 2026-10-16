@@ -2,9 +2,11 @@
 
 [English README](README.md) | **中文版**
 
-Java 21 + Swing 的课程成绩与目标分数计算器，COMPSCI 201 三人小组项目第三版（v0.3）。无需 Maven、Gradle、数据库或第三方库。
+使用 Java 21 + Swing 的开源课程成绩与目标分数计算器，正在准备首个公开发行版 **v1.0.0**。无需 Maven、Gradle、数据库或第三方库。
 
 ## 启动
+
+发布后可从 [GitHub Releases](https://github.com/ClarkzzZz/dku-grade-planner/releases) 下载 JAR，用 `java -jar dku-grade-planner.jar` 启动。需要自行安装 Java 21 或更新版本；安装包不包含 Java。以下为源码构建方式。
 
 配置 **JDK 21**，确认 `java -version` 和 `javac -version` 均可运行。在仓库根目录执行：
 
@@ -78,33 +80,26 @@ macOS / Linux：
 bash scripts/test.sh
 ```
 
-Windows构建后：
+Windows PowerShell：
 
 ```powershell
-javac --release 21 -encoding UTF-8 -cp build/classes -d build/test-classes src/test/java/edu/dku/gradeplanner/GradePlannerTest.java
-java -Djava.awt.headless=true -cp "build/classes;build/test-classes" edu.dku.gradeplanner.GradePlannerTest
+powershell -ExecutionPolicy Bypass -File scripts/test.ps1
 ```
 
-覆盖计算、边界和XML存储。[验证记录](docs/validation.md)说明已执行检查与仍需手动验收的范围。
+覆盖计算、边界、语言设置和 XML 存储。[验证说明](docs/validation.md)提供复现命令和手动验收清单。GitHub Actions 配置了 Linux、macOS、Windows 上的 Java 21 / 25 检查；配置完成不代表已在这些环境验证通过。
 
-## 代码与团队接手
+## 架构与参与贡献
 
-| 模块 | 文件 | 负责人建议 |
-|---|---|---|
-| 模型与算法 | Course、GradeCategory、GradeEntry、GradeCalculator | A |
-| Swing界面 | MainFrame、App | B |
-| 存储和测试 | CourseStorage、GradePlannerTest | C |
+项目分为不可变数据模型（Course、GradeCategory、GradeEntry）、计算服务（GradeCalculator）、XML 存储（CourseStorage）和 Swing 界面（App、MainFrame），详见[架构说明](docs/architecture.md)。
 
-List保存类别与成绩；Map按类别ID查预测；Set校验重复ID和名称。详见[三人计划](docs/team-plan.md)。
+欢迎任何人通过 Issue 和 Pull Request 参与修复、文档、测试和功能开发，不再按三人小组分配模块。请先阅读[贡献指南](CONTRIBUTING.md)。Issue 可以使用中文或英文，请勿上传真实的个人成绩文件。
+
+参见[更新日志](CHANGELOG.md)、[首版发布说明](docs/releases/v1.0.0.md)和[发布清单](docs/releasing.md)。v0.1–v0.3 为课堂原型迭代，v1.0.0 是首个公开发行版本的基线。
+
+## 许可证
+
+采用 [MIT 许可证](LICENSE)。项目起源于课程作业，现面向社区协作。实现过程中使用了 Codex 辅助，贡献者需自行审阅和验证提交的改动。
 
 ## 范围
 
 当前支持一门课的普通加权评分，不处理最低分剔除、额外加分、曲线、考试最低通过线、字母等级或自动PDF解析。每次只反推一项考试，其他未知类别要提供假设。
-
-第一版由Codex辅助实现。团队应理解代码、亲自测试，并根据课程完整AI规则记录使用情况。团队计划中的角色是接手建议，不代表这些代码已由三位成员分别编写。
-
-## 第三版更新
-
-启动改为空白课程，应用名称与可编辑课程名称分开显示。移除 Load Demo 按钮、应用源码中的演示数据类和附带示例XML。计算测试数据只保留在测试源码中，不进入应用JAR。
-
-界面保持英文，README提供中英两版。XML字段和计算规则保持兼容，已有用户录入的名称不会被自动翻译。

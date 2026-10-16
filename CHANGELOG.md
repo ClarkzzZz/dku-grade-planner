@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.0.0 — Unreleased
+## 1.0.0 — 2026-10-16
 
 First public release baseline, following internal classroom iterations v0.1–v0.3.
 
@@ -12,4 +12,4 @@ First public release baseline, following internal classroom iterations v0.1–v0
 - Quote JVM properties in the PowerShell test runner so Windows passes them to Java correctly.
 - Cross-platform Java 21/25 CI configuration, Windows test script, versioned JAR manifest, and draft release workflow with SHA-256 checksum.
 
-Release dates and successful CI/manual checks must be recorded when actually completed. No grading formulas or XML fields changed for the public-release preparation.
+See docs/validation.md for executed checks and manual acceptance limitations. No grading formulas or XML fields changed for the public-release preparation.

@@ -16,7 +16,13 @@ Environment: macOS 27.0.1 (arm64), Oracle JDK 25.0.3; compilation uses `--releas
 | Inspect JAR contents | Production classes present; no test classes, DemoData, or course XML |
 | `bash -n scripts/build.sh scripts/test.sh scripts/run.sh` | PASS |
 
-Local compilation on JDK 25 with a Java 21 target is not execution on a Java 21 runtime. An official Eclipse Temurin Java 21.0.12.1 runtime was subsequently downloaded from the Adoptium GitHub release and verified against its published SHA-256 checksum. Both default and Chinese-default test runs passed all 44 checks on this runtime. PowerShell is not installed locally. Linux/Windows execution, the new GitHub Actions workflows, and complete GUI acceptance remain pending. Earlier classroom verification claims are not carried forward as evidence for this release.
+The original local build used JDK 25 with a Java 21 target. An official Eclipse Temurin Java 21.0.12.1 runtime was subsequently downloaded from the Adoptium GitHub release and verified against its published SHA-256 checksum. Both default and Chinese-default test runs passed all 44 checks on this runtime. PowerShell is not installed locally. Linux, Windows, and macOS automated execution is now confirmed by the CI record below. Complete GUI acceptance remains pending. Earlier classroom verification claims are not carried forward as evidence for this release.
+
+## Executed in GitHub Actions — October 16, 2026
+
+[Build and test run #2](https://github.com/ClarkzzZz/dku-grade-planner/actions/runs/38869378480) passed on commit `6161621e35878ba912d49c03d7327e54918997d2` for all six combinations: Ubuntu/macOS/Windows with Java 21/25. Each job builds the application, runs the 44-check suite under default and Chinese-default locales, and inspects the JAR manifest and contents.
+
+The initial Windows run failed before the test main class could start because PowerShell split the unquoted `-Djava.awt.headless=true` argument. Quoting it fixed the failure; both Windows jobs passed on the subsequent run linked above. CI actions were also updated to their Node 24 generation. The tag workflow reruns this same matrix before creating release assets.
 
 ## Reproduce automated checks
 
@@ -61,4 +67,4 @@ Run the application on a graphical desktop with invented data. Record OS, JDK, c
 
 ## Release gate
 
-All automated CI jobs must pass on the intended release commit. Complete the manual checks or explicitly narrow the release's claimed platform support before publication. Record actual failures as issues with steps and evidence; planned tests are not an issue log. Follow [releasing](releasing.md) for tag, draft assets, and publication steps.
+All automated CI jobs must pass on the intended release commit. For v1.0.0, publish the automated compatibility results together with the explicit limitation that full desktop GUI acceptance remains incomplete; this is not a claim that every platform-specific dialog or interaction has been verified. Continue recording the pending manual checks after release. Record actual failures as issues with steps and evidence; planned tests are not an issue log. Follow [releasing](releasing.md) for tag, draft assets, and publication steps.

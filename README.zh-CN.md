@@ -2,11 +2,11 @@
 
 [English README](README.md) | **中文版**
 
-使用 Java 21 + Swing 的开源课程成绩与目标分数计算器，正在准备首个公开发行版 **v1.0.0**。无需 Maven、Gradle、数据库或第三方库。
+使用 Java 21 + Swing 的开源课程成绩与目标分数计算器，首个公开发行版为 **v1.0.0**。无需 Maven、Gradle、数据库或第三方库。
 
 ## 启动
 
-发布后可从 [GitHub Releases](https://github.com/ClarkzzZz/dku-grade-planner/releases) 下载 JAR，用 `java -jar dku-grade-planner.jar` 启动。需要自行安装 Java 21 或更新版本；安装包不包含 Java。以下为源码构建方式。
+可从 [GitHub Releases](https://github.com/ClarkzzZz/dku-grade-planner/releases) 下载 JAR，用 `java -jar dku-grade-planner.jar` 启动。需要自行安装 Java 21 或更新版本；安装包不包含 Java。以下为源码构建方式。
 
 配置 **JDK 21**，确认 `java -version` 和 `javac -version` 均可运行。在仓库根目录执行：
 

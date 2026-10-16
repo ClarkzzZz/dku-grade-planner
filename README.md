@@ -2,11 +2,11 @@
 
 **English** | [Chinese README](README.zh-CN.md)
 
-An open-source course grade and target exam score calculator built with **Java 21 + Swing**. The first public release, **v1.0.0**, is being prepared. No Maven, Gradle, database, or third-party library is required.
+An open-source course grade and target exam score calculator built with **Java 21 + Swing**. First public release: **v1.0.0**. No Maven, Gradle, database, or third-party library is required.
 
 ## Run
 
-Download the runnable JAR from [GitHub Releases](https://github.com/ClarkzzZz/dku-grade-planner/releases) when available, then run `java -jar dku-grade-planner.jar`. Java 21 or newer is required; Java is not bundled. To build from source, follow the steps below.
+Download the runnable JAR from [GitHub Releases](https://github.com/ClarkzzZz/dku-grade-planner/releases), then run `java -jar dku-grade-planner.jar`. Java 21 or newer is required; Java is not bundled. To build from source, follow the steps below.
 
 Configure **JDK 21** and check both `java -version` and `javac -version`. From the repository root:
 
